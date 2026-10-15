@@ -23,15 +23,15 @@ def criar_tabela():
         nota1 REAL NOT NULL,
         nota2 REAL NOT NULL
         )
-''')
+ ''')
     conn.commit()
     conn.close()
 
-def inserir_alunos():
+def inserir_alunos(nome, nota1, nota2):
         '''Devolve uma lista de tuplas: (id, nome, nota1, nota2)'''
         conn = conectar()
         conn.execute(
-            'INSERT INTO alunos (nome, nota1,nota2) VALUES (?, ?, ?)'
+            'INSERT INTO alunos (nome, nota1,nota2) VALUES (?, ?, ?)', (nome, nota1, nota2)
         )
         conn.commit()
         conn.close()
@@ -39,16 +39,16 @@ def inserir_alunos():
 def listar_alunos():
             conn = conectar()
             linhas = conn.execute(
-                'SELECT id, nome, nota1, nota2 FROM alunos ORDEY BY nome'
+                'SELECT id, nome, nota1, nota2 FROM alunos ORDER BY nome'
             ).fetchall()
             conn.close()
             return linhas
 def buscar_por_nome(texto):
       '''Buscar aluno cujo nome contém o texto (ignora maiúculas)'''
       conn = conectar()
-      linhas = conn.executive(
+      linhas = conn.execute(
             'SELECT id, nome, nota1, nota2 FROM alunos WHERE nome LIKE ? ORDER BY nome',
-            (f'%{texto}%',),
+            (f'%{texto}%',)
       ).fetchall()
       conn.close()
       return linhas 
@@ -57,7 +57,7 @@ def buscar_por_id(id_aluno):
       '''Devolve o aluno com esse id ou None se não existir'''
       conn = conectar()
       aluno = conn.execute(
-            'SELECT id, nome, nota1, nota2 FROM alunos WHERE id = ?', (id_aluno)
+            'SELECT id, nome, nota1, nota2 FROM alunos WHERE id = ?', (id_aluno,)
             
       ).fetchone()
       conn.close()
@@ -65,12 +65,12 @@ def buscar_por_id(id_aluno):
 def atualizar_notas(id_aluno, nota1, nota2):
       conn = conectar()
       conn.execute(
-            'UPDATE alunos SET nota1 = ?, nota2 = ? WHERE id = ?'
+            'UPDATE alunos SET nota1 = ?, nota2 = ? WHERE id = ?', (nota1, nota2, id_aluno)
       )
       conn.commit()
       conn.close
 
-      def remover_aluno(id_aluno):
+def remover_aluno(id_aluno):
             conn = conectar()
             conn.execute(
                   'DELETE FROM alunos WHERE id = ?', (id_aluno,)
